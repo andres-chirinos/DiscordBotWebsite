@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Perfil{% endblock %}
+
+{% block content %}
+<div class="container-sm">
+    <!--<code>{{data}}</code>-->
+    <h1 class="display-1">Bienvenido!</h1>
+    <div class="card mb-3" style="max-width: 540px;">
+        <div class="row g-0">
+            <div class="col-md-4 m-2">
+                <img src="{{user.avatar_url}}" class="img-fluid rounded-circle me-2" alt="Avatar">
+                <h5>{{user}}</h5>
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title text-capitalize">{{data['type']}}</h5>
+                    <form method="post">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">@</span>
+                            <div class="form-floating">
+                                <input type="text" class="form-control" name="username" id="usernamegroupinput"
+                                    placeholder="Steve" value="{{data.platform_username}}">
+                                <label for="usernamegroupinput">Nickname</label>
+                            </div>
+                        </div>
+                        <p class="card-text">
+                            {% if data['verified'] is true %}
+                            <span class="badge rounded-pill text-bg-success">Verificado</span>
+                            {% else %}
+                            <span class="badge rounded-pill text-bg-danger">Verificado</span>
+                            {% endif %}
+                            <span class="badge rounded-pill text-bg-info">Rango {{data['rank']}}</span>
+                            .</p>
+                        <button class="btn btn-primary" type="submit">Guardar cambios</button>
+                        <hr>
+                        <p class="card-text"><small class="text-body-secondary">Actualizado el
+                                {{data['update']}}</small>
+                            <a class="badge bg-secondary" href="{{url_for('.verify')}}" role="button">Verificar</a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

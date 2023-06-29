@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}Verify{% endblock %}
+
+{% block content %}
+<div class="container justify-content-center">
+    <h1 class="display-1">Has sido Verificado!</h1>
+    <p>Ahora puedes volver a <strong>Discord</strong> y cerrar esta pestaña, si quieres cambiar algo o revisar por ti mismo vamos a <a class="badge bg-secondary" href="{{url_for('.profile')}}">Perfil.</a></p>
+</div>
+{% endblock content %}
