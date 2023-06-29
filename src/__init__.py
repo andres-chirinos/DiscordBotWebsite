@@ -43,16 +43,6 @@ app.config["DISCORD_REDIRECT_URI"] = "https://" + url + "/oauth/callback"
 discord_session = DiscordOAuth2Session(app)
 
 
-# @app.url_defaults
-# def defaults(endpoint, values):
-#    print("def", endpoint, values)
-
-
-# @app.url_value_preprocessor
-# def preprocessor(endpoint, values):
-#    print("pre", endpoint, values)
-
-
 @app.route("/")
 async def index():
     try:
@@ -68,13 +58,13 @@ async def index():
 async def oauth(redirect, prompt):
     try:
         await discord_session.fetch_user()
-        discord_session.revoke()
+        if prompt.lower() == "true":
+            prompt = True
+            discord_session.revoke()
+        else:
+            prompt = False
     except:
         pass
-    if prompt.lower() == "true":
-        prompt = True
-    else:
-        prompt = False
 
     return await discord_session.create_session(
         scope=["role_connections.write", "identify"],
@@ -127,7 +117,7 @@ async def profile():
 
 
 @app.errorhandler(Unauthorized)
-async def redirect_unauthorized(e):
+async def unauthorized(e):
     return redirect(url_for("oauth", redirect=request.path, prompt="false"))
 
 
@@ -146,8 +136,13 @@ async def access_denied(e):
 @app.errorhandler(HttpException)
 async def http_exception(e):
     await flash(message=e, category="danger")
-    return await make_response(jsonify({"message": f"{e}"}), 302)
+    return await make_response(jsonify({"message": str(e)}))
 
+
+@app.errorhandler(Exception)
+async def exception(e):
+    discord_session.revoke()
+    return await make_response(jsonify({"message": str(e)}))
 
 if __name__ == "__main__":
     dictConfig(
