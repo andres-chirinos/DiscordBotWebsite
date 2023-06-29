@@ -37,7 +37,7 @@ app.secret_key = os.environ.get("DISCORD_CLIENT_SECRET")
 app.config["DISCORD_CLIENT_ID"] = os.getenv("DISCORD_CLIENT_ID")
 app.config["DISCORD_BOT_TOKEN"] = os.getenv("DISCORD_BOT_TOKEN")
 app.config["DISCORD_CLIENT_SECRET"] = os.getenv("DISCORD_CLIENT_SECRET")
-app.config["DISCORD_REDIRECT_URI"] = "http://" + url + "/oauth/callback"
+app.config["DISCORD_REDIRECT_URI"] = "https://" + url + "/oauth/callback"
 
 
 discord_session = DiscordOAuth2Session(app)
@@ -162,6 +162,6 @@ if __name__ == "__main__":
         }
     )
     app.run(
-        host=os.environ.get("HOST", "0.0.0.0"),
-        port=os.environ.get("PORT", "80"),
+        host=os.environ.get("HOST"),
+        port=os.environ.get("PORT"),
     )
