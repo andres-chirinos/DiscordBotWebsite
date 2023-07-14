@@ -55,9 +55,9 @@
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                                     aria-expanded="false">
-                                    <img src="{{user.avatar_url}}" alt="" width="32" height="32"
+                                    <img src="https://cdn.discordapp.com/avatars/{{user['id']}}/{{user['avatar']}}.png" alt="" width="32" height="32"
                                         class="rounded-circle me-2">
-                                    {{user}}
+                                    {{user['global_name']}}
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" href="{{url_for('.profile')}}">Perfil</a></li>
