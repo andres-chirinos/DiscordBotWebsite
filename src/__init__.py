@@ -86,7 +86,7 @@ async def callback():
     data = await discord_session.callback()
     tokens = await discord_session.get_authorization_token()
     user = await discord_session.fetch_user()
-    Memoria.get_database('master').get_collection('users').update_one({'_id':user.id}, {"$set": {"bot_tokens": tokens}})
+    await role_connection.update_role_data(user.id, {"bot_tokens": tokens})
     return redirect(url_for(".index") + data["redirect"])
 
 
@@ -101,6 +101,8 @@ async def close():
 async def verify():
     tokens = await discord_session.get_authorization_token()
     user = await discord_session.fetch_user()
+    await role_connection.update_role_data(user.id, {"bot_tokens": tokens})
+
     await role_connection.push_role_connection(
         bot_access_token=tokens["access_token"],
         body=await role_connection.get_role_data(user.id),
@@ -112,7 +114,7 @@ async def verify():
 @requires_authorization
 async def profile():
     user = await discord_session.fetch_user()
-    data = role_connection.get_role_data(user.id)
+    data = await role_connection.get_role_data(user.id)
     return await render_template("user.html", user=user.to_json(), data=data)
 
 

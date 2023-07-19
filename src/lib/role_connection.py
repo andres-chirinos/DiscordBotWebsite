@@ -4,8 +4,8 @@ import requests, json, pymongo, quart, datetime
 class RoleConnection:
     def __init__(
         self,
-        app: quart.Quart,
-        Memoria: pymongo.MongoClient,
+        app: quart.Quart = None,
+        Memoria: pymongo.MongoClient = None,
         client_id=None,
         bot_token: str = None,
         metadata_set: list = None,
@@ -70,7 +70,7 @@ class RoleConnection:
             )
 
     async def _find_clear_data(self, id: int):
-        return self.collection.find_one({"_id": id})
+        return self.collection.find_one({"_id": id}) or await self.create_role_data(id)
 
     async def create_role_data(self, id: int):
         metadata_dict = {
@@ -90,14 +90,14 @@ class RoleConnection:
                 "platform_name": "Extranjero",
                 "platform_username": "Steve",
                 "metadata": metadata_dict,
-                "tokens": dict()
+                "tokens": dict(),
             }
         )
 
         return self.collection.find_one({"_id": id})
 
     async def get_role_data(self, id: int):
-        rawdata = await self._find_clear_data(id) or await self.create_role_data(id)
+        rawdata = await self._find_clear_data(id)
         return {
             "platform_name": rawdata["platform_name"],
             "platform_username": rawdata["platform_username"],
@@ -107,4 +107,8 @@ class RoleConnection:
                 if key in [x["key"] for x in self.metadata_set]
             },
         }
-    
+
+    async def update_role_data(self, id: int, set: dict):
+        rawdata = await self._find_clear_data(id)
+        self.collection.update_one({"_id": id}, {"$set": set})
+        return self.collection.find_one({"_id": id})
